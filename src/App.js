@@ -7,30 +7,48 @@ class App extends Component {
     super(props)
 
     this.state ={
-      category: 'All',
+      currentCategory: 'All',
     }
   }
 
   render() {
+    const { currentCategory } = this.state;
+    
+
     const cats = categories.map((item, index) => {
+
+      const isSelected = currentCategory === item;
+      console.log(currentCategory, item)
+      const selected = isSelected ? 'selected': 'not-selected'
+
       return (
         <button
           key={(`category-${index}`)}
           onClick={(e) => {
-            this.setState({ category: item});
+            this.setState({ currentCategory: item});
           }}
+          className={selected}
         >{item}</button>
       )
     })
 
-    const products = inventory.filter((item) => {
-      return item.category === "Toys"
-    }).map(({ name, id, category, description, price }, index ) => {
+
+    const products = inventory.filter(item => 
+       item.category === currentCategory || currentCategory === 'All',
+    ).map(({ name, id, category, description, price } ) => {
+      
+      const isSelected = currentCategory === category
+
+      const selected = isSelected ? 'selected': ''
+
       return (
-        <div key={`product=${id}`}>
+        <div 
+          className={selected}
+          key={`product=${id}`}
+        >
           <h1>{name}</h1>
           <p>{description}</p>
-          <p>{price}</p>
+          <p>${price}</p>
           <p>{category}</p>
         </div>
       )
@@ -38,9 +56,6 @@ class App extends Component {
 
     return (
       <div className="App">
-        <p>{this.state.category}</p>
-
-
 
         <ul>
           {cats}
